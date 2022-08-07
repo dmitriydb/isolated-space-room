@@ -4,14 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Cleanup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ru.shanalotte.temperature.TemperatureSocketServerConfig;
 import ru.shanalotte.temperature.generator.CollectionTemperatureStateListener;
 import ru.shanalotte.temperature.generator.SimpleTemperatureGenerator;
 import ru.shanalotte.temperature.generator.TemperatureGenerator;
@@ -104,4 +107,25 @@ class TemperatureSocketServerTest {
     new Thread(r3).start();
     Thread.sleep(2000L);
   }
+
+  @Test
+  public void shouldRunOnDefaultPortIfTSocketVariableMissing() {
+    if (System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE) != null) {
+      return;
+    }
+    TemperatureSocketServer socketServer = new TemperatureSocketServer(new SimpleTemperatureGenerator());
+    assertThat(String.valueOf(socketServer.getPort()))
+        .isEqualTo(TemperatureSocketServerConfig.DEFAULT_PORT);
+  }
+
+  @Test
+  public void shouldRunOnTSocketServerVariableIfSet() throws InterruptedException {
+    if (System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE) == null) {
+      return;
+    }
+    TemperatureSocketServer socketServer = new TemperatureSocketServer(new SimpleTemperatureGenerator());
+    assertThat(String.valueOf(socketServer.getPort()))
+        .isEqualTo(System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE));
+  }
+
 }

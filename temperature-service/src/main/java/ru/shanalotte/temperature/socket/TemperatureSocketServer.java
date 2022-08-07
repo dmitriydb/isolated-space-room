@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import lombok.Cleanup;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import ru.shanalotte.temperature.TemperatureSocketServerConfig;
 import ru.shanalotte.temperature.generator.TemperatureGenerator;
 import ru.shanalotte.temperature.generator.TemperatureState;
 import ru.shanalotte.temperature.generator.TemperatureStateListener;
@@ -18,9 +20,21 @@ import ru.shanalotte.temperature.generator.TemperatureStateListener;
 @RequiredArgsConstructor
 public class TemperatureSocketServer implements TemperatureStateListener {
 
+  @Getter
   private final int port;
   private final TemperatureGenerator temperatureGenerator;
   private CopyOnWriteArrayList<PrintWriter> clients = new CopyOnWriteArrayList<>();
+
+  public TemperatureSocketServer(TemperatureGenerator temperatureGenerator) {
+    this.temperatureGenerator = temperatureGenerator;
+    int portValue = TemperatureSocketServerConfig.DEFAULT_PORT;
+    try {
+      System.out.println(System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE));
+      portValue = Integer.parseInt(System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE));
+    } catch (Throwable t) {
+    }
+    port = portValue;
+  }
 
   public void start() throws IOException {
     new ServerRunner().start();
@@ -28,7 +42,7 @@ public class TemperatureSocketServer implements TemperatureStateListener {
 
   @Override
   public void getNewState(TemperatureState state) {
-   for (PrintWriter out : clients) {
+    for (PrintWriter out : clients) {
       out.write(state.toString() + "\n");
       out.flush();
     }
@@ -39,7 +53,7 @@ public class TemperatureSocketServer implements TemperatureStateListener {
     return null;
   }
 
-  private class ServerRunner extends Thread{
+  private class ServerRunner extends Thread {
     @SneakyThrows
     public void run() {
       @Cleanup ServerSocket serverSocket = new ServerSocket(port);
@@ -50,7 +64,7 @@ public class TemperatureSocketServer implements TemperatureStateListener {
     }
   }
 
-  private class ClientWorker extends Thread{
+  private class ClientWorker extends Thread {
     private Socket s;
 
     public ClientWorker(Socket s) {
