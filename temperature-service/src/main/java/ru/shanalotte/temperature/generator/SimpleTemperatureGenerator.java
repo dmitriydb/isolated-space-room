@@ -103,10 +103,9 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator {
 
   private class VectorChanger extends Thread {
     public void run() {
-      int secondsToSleep = ThreadLocalRandom.current().nextInt(TemperatureGeneratorConfig.MAX_DELAY_BETWEEN_VECTOR_CHANGE + 1);
       try {
         while (true) {
-          Thread.sleep(secondsToSleep * 1000);
+          Thread.sleep(TemperatureGeneratorConfig.VECTOR_CHANGE_DELAY_MS);
           changeVector();
           chooseRandomTemperatureChangingSpeed();
           sendState();

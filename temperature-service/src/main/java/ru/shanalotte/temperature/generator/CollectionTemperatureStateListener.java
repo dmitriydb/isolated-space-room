@@ -9,7 +9,6 @@ public class CollectionTemperatureStateListener implements TemperatureStateListe
   @Override
   public void getNewState(TemperatureState state) {
     recordedEvents.add(state);
-    System.out.println(state);
   }
 
   @Override

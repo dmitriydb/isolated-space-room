@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import ru.shanalotte.temperature.TemperatureConstants;
+import ru.shanalotte.temperature.TemperatureGeneratorConfig;
 
 public class TemperatureGeneratorTest {
 
@@ -25,7 +26,7 @@ public class TemperatureGeneratorTest {
     Set<TemperatureVector> vectors = new HashSet<>();
     for (int i = 0; i < 10; i++) {
       vectors.add(temperatureGenerator.getCurrentTemperatureVector());
-      Thread.sleep(1000);
+      Thread.sleep(TemperatureGeneratorConfig.TEMPERATURE_CHANGE_TIMEOUT_MS);
     }
     assertThat(vectors).hasSizeGreaterThan(1);
   }
@@ -36,7 +37,7 @@ public class TemperatureGeneratorTest {
     TemperatureGenerator temperatureGenerator = new SimpleTemperatureGenerator();
     temperatureGenerator.addListener(listener);
     temperatureGenerator.start();
-    Thread.sleep(5000);
+    Thread.sleep(TemperatureGeneratorConfig.TEMPERATURE_CHANGE_TIMEOUT_MS * 5);
     List<Integer> recordedTemperatureValues = listener.recordedEvents().stream().map(TemperatureState::getTemperature)
         .collect(Collectors.toList());
     assertThat(recordedTemperatureValues).hasSizeGreaterThan(4);
