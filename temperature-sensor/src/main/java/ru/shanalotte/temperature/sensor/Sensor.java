@@ -52,7 +52,21 @@ public class Sensor {
   public void startSensing() {
     @Cleanup Socket s = new Socket(serverHost, serverPort);
     @Cleanup BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-    in.lines().forEach(sensorProducer::sendRecord);
+    in.lines().forEach(line -> {
+      if (doesNotDuplicate(line)) {
+        if (sensorProducer != null) {
+          sensorProducer.sendRecord(line);
+        }
+        recordedEvents.add(line);
+      }
+    });
+  }
+
+  private boolean doesNotDuplicate(String line) {
+    if (recordedEvents.size() == 0) {
+      return true;
+    }
+    return !recordedEvents.get(recordedEvents.size() - 1).equals(line);
   }
 
   public void attachProducer(SensorProducer sensorProducer) {

@@ -52,10 +52,32 @@ public class SensorTest {
     sensor.attachProducer(sensorProducer);
     sensor.startSensing();
     ArgumentCaptor<String> recordSendCaptor = ArgumentCaptor.forClass(String.class);
-    verify(sensorProducer, times(3)).sendRecord(recordSendCaptor.capture());
     Thread.sleep(150);
+    verify(sensorProducer, times(3)).sendRecord(recordSendCaptor.capture());
     List<String> actuallySendRecords = recordSendCaptor.getAllValues();
     assertThat(actuallySendRecords).contains("a", "c", "b");
+  }
+
+  @Test
+  public void should_notSendDuplicateEvents() throws InterruptedException {
+    new Thread(new FakeServer("a", "a", "b")).start();
+    Sensor sensor = new Sensor("test");
+    SensorProducer sensorProducer = Mockito.mock(SensorProducer.class);
+    sensor.attachProducer(sensorProducer);
+    sensor.startSensing();
+    Thread.sleep(150);
+    verify(sensorProducer, times(2)).sendRecord(any());
+  }
+
+  @Test
+  public void should_sendDuplicateEventsThatAreApartFromEachOther() throws InterruptedException {
+    new Thread(new FakeServer("a", "b", "a", "b")).start();
+    Sensor sensor = new Sensor("test");
+    SensorProducer sensorProducer = Mockito.mock(SensorProducer.class);
+    sensor.attachProducer(sensorProducer);
+    sensor.startSensing();
+    Thread.sleep(100);
+    verify(sensorProducer, times(4)).sendRecord(any());
   }
 
   private class FakeServer implements Runnable{
