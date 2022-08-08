@@ -1,5 +1,5 @@
 package ru.shanalotte.config;
 
-public class SensorProducerConfig {
+public class TopicsConfig {
   public static final String TOPIC_NAME = "temperature";
 }

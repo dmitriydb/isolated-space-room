@@ -12,6 +12,7 @@
         <module>temperature-service</module>
         <module>config</module>
         <module>temperature-sensor</module>
+        <module>room-guard</module>
     </modules>
 
     <properties>

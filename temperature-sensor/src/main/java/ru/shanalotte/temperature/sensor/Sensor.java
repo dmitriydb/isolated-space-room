@@ -50,16 +50,28 @@ public class Sensor {
 
   @SneakyThrows
   public void startSensing() {
-    @Cleanup Socket s = new Socket(serverHost, serverPort);
-    @Cleanup BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-    in.lines().forEach(line -> {
-      if (doesNotDuplicate(line)) {
-        if (sensorProducer != null) {
-          sensorProducer.sendRecord(line);
+    while (true) {
+      try {
+        log.info("Connected.");
+        @Cleanup Socket s = new Socket(serverHost, serverPort);
+        @Cleanup BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String line;
+        while ((line = in.readLine()) != null) {
+          log.debug("Got {}", line);
+          if (doesNotDuplicate(line)) {
+            if (sensorProducer != null) {
+              sensorProducer.sendRecord(line);
+            }
+            recordedEvents.add(line);
+          }
         }
-        recordedEvents.add(line);
+        log.info("Disconnected");
+      } catch (Throwable t) {
+        log.info("Lost connection... waiting {} ms to reconnect", 100);
+        Thread.sleep(100);
       }
-    });
+
+    }
   }
 
   private boolean doesNotDuplicate(String line) {

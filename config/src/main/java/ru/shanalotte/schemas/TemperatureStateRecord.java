@@ -11,6 +11,7 @@ import lombok.ToString;
 
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class TemperatureStateRecord {
   private @NonNull String vector;
   private @NonNull int currentTemperature;

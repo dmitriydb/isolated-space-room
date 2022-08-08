@@ -7,7 +7,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 public class SensorTest {
 
   @Test
@@ -80,25 +83,54 @@ public class SensorTest {
     verify(sensorProducer, times(4)).sendRecord(any());
   }
 
-  private class FakeServer implements Runnable{
+  @Test
+  public void should_readAgainAfterServerIsShuttedDown() throws InterruptedException {
+    new Thread(new FakeServer("a", "b", "c")).start();
+    CountDownLatch countDownLatch = new CountDownLatch(1);
+    new Thread(new FakeServer(countDownLatch, "d", "e", "f")).start();
+    Sensor sensor = new Sensor("test");
+    SensorProducer sensorProducer = Mockito.mock(SensorProducer.class);
+    sensor.attachProducer(sensorProducer);
+    sensor.startSensing();
+    Thread.sleep(200);
+    countDownLatch.countDown();
+    Thread.sleep(200);
+    assertThat(sensor.getRecordedEvents()).contains("a", "c", "b", "d", "e", "f");
+  }
+
+  private static class FakeServer implements Runnable{
     private final String[] recordsToSend;
+    private CountDownLatch countDownLatch;
 
     public FakeServer(String... recordsToSend) {
       this.recordsToSend = recordsToSend;
     }
 
+    public FakeServer(CountDownLatch countDownLatch, String... recordsToSend) {
+      this.recordsToSend = recordsToSend;
+      this.countDownLatch = countDownLatch;
+    }
+
+
     @Override
     public void run() {
       try {
+        if (countDownLatch != null) {
+          countDownLatch.await();
+        }
+        log.info("Starting server...");
         @Cleanup ServerSocket serverSocket = new ServerSocket(8172);
+        log.info("Started server");
         @Cleanup Socket s = serverSocket.accept();
+        log.info("Got connection");
         @Cleanup PrintWriter out = new PrintWriter(s.getOutputStream());
         for (String record : recordsToSend) {
           out.write(record + "\n");
         }
         out.flush();
+        System.out.println("Server is shutting down.");
       } catch (Exception ex) {
-        ex.printStackTrace();
+        log.error("", ex);
       }
     }
   }
