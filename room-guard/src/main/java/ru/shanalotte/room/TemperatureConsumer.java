@@ -32,6 +32,7 @@ public class TemperatureConsumer extends Thread{
     consumerConfigMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerConfigMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerConfigMap.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+    consumerConfigMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
     KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerConfigMap);
     consumer.subscribe(Collections.singletonList(TopicsConfig.TOPIC_NAME));
     log.info("Start listening!");

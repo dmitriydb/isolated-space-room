@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import ru.shanalotte.config.TemperatureGeneratorConfig;
 
-public class SimpleTemperatureGenerator implements TemperatureGenerator {
+public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleTemperatureGeneratorMBean {
 
   private AtomicInteger currentTemperature = new AtomicInteger(0);
   private AtomicInteger temperatureChangeSpeed = new AtomicInteger(0);
@@ -114,6 +114,11 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator {
         e.printStackTrace();
       }
     }
+  }
+
+  @Override
+  public void setCurrentTemperature(int temperature) {
+    this.currentTemperature.set(temperature);
   }
 
   private void sendState() {

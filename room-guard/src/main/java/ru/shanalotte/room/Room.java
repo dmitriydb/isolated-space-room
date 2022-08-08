@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Room {
 
-  public AtomicInteger status = new AtomicInteger();
+  public AtomicInteger status = new AtomicInteger(0);
+  private ConnectionMonitor connectionMonitor;
 
   public String state() {
     return status.get() == 0 ? "closed" : "open";
@@ -14,15 +15,21 @@ public class Room {
 
   public synchronized void closeRoom() {
     this.status.set(0);
+    connectionMonitor.updateTime();
     log.info("[*** ROOM IS CLOSED ***]");
   }
 
   public synchronized void openRoom() {
     this.status.set(1);
+    connectionMonitor.updateTime();
     log.info("[*** ROOM IS OPENED ***]");
   }
 
   public boolean isClosed() {
     return status.get() == 0;
+  }
+
+  public void attachConnectionMonitor(ConnectionMonitor connectionMonitor) {
+    this.connectionMonitor = connectionMonitor;
   }
 }
