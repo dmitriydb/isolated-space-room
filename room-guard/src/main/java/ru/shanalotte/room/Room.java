@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Room {
+public class Room implements RoomMBean{
 
   public AtomicInteger status = new AtomicInteger(0);
   private ConnectionMonitor connectionMonitor;
