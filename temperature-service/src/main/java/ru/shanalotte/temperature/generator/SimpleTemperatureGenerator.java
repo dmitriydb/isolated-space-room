@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.slf4j.Slf4j;
 import ru.shanalotte.config.TemperatureGeneratorConfig;
+import ru.shanalotte.constants.TemperatureConstants;
 
+@Slf4j
 public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleTemperatureGeneratorMBean {
 
   private AtomicInteger currentTemperature = new AtomicInteger(0);
@@ -14,7 +17,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
   private volatile TemperatureVector currentVector = TemperatureVector.INCREASING;
   private List<TemperatureStateListener> listeners = new ArrayList<>();
   private ArrayBlockingQueue<TemperatureState> listenerEvents = new ArrayBlockingQueue<>(1000);
-
+  private AtomicInteger goal = new AtomicInteger(0);
   public SimpleTemperatureGenerator() {
 
   }
@@ -64,10 +67,30 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
     } else {
       currentVector = TemperatureVector.DECREASING;
     }
+    setNewGoal();
+  }
+
+  public void setNewGoal() {
+    if (currentVector == TemperatureVector.INCREASING) {
+      goal.set(ThreadLocalRandom.current().nextInt(TemperatureConstants.MAX_DOABLE_TEMPERATURE));
+    } else
+    {
+      goal.set(-ThreadLocalRandom.current().nextInt(-TemperatureConstants.MIN_DOABLE_TEMPERATURE));
+    }
+    log.info("NEW GOAL IS {}", goal.get());
+  }
+
+  public boolean isGoalReached() {
+    if (currentVector == TemperatureVector.INCREASING) {
+      return currentTemperature.get() >= goal.get();
+    } else
+    {
+      return currentTemperature.get() <= goal.get();
+    }
   }
 
   private void chooseRandomTemperatureChangingSpeed() {
-    temperatureChangeSpeed.set(ThreadLocalRandom.current().nextInt(TemperatureGeneratorConfig.MAX_TEMPERATURE_CHANGE_SPEED + 1));
+    temperatureChangeSpeed.set(ThreadLocalRandom.current().nextInt(TemperatureGeneratorConfig.MAX_TEMPERATURE_CHANGE_SPEED) + 1);
   }
 
   private class ListenerNotifier extends Thread {
@@ -106,9 +129,12 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
       try {
         while (true) {
           Thread.sleep(TemperatureGeneratorConfig.VECTOR_CHANGE_DELAY_MS);
-          changeVector();
-          chooseRandomTemperatureChangingSpeed();
-          sendState();
+          if (isGoalReached()) {
+            changeVector();
+            setNewGoal();
+            chooseRandomTemperatureChangingSpeed();
+            sendState();
+          }
         }
       } catch (InterruptedException e) {
         e.printStackTrace();
