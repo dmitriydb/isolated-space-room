@@ -4,11 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import ru.shanalotte.temperature.TemperatureConstants;
-import ru.shanalotte.temperature.TemperatureGeneratorConfig;
+import ru.shanalotte.constants.TemperatureConstants;
+import ru.shanalotte.config.TemperatureGeneratorConfig;
 
 public class TemperatureGeneratorTest {
 

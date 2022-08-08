@@ -1,4 +1,4 @@
-package ru.shanalotte.temperature;
+package ru.shanalotte.config;
 
 public class TemperatureSocketServerConfig {
   public static final int DEFAULT_PORT = 9999;

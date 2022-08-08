@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
-import ru.shanalotte.temperature.TemperatureGeneratorConfig;
+import ru.shanalotte.config.TemperatureGeneratorConfig;
 
 public class SimpleTemperatureGenerator implements TemperatureGenerator {
 

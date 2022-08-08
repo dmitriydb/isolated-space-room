@@ -1,4 +1,4 @@
-package ru.shanalotte.temperature;
+package ru.shanalotte.config;
 
 public class TemperatureGeneratorConfig {
   public final static int VECTOR_CHANGE_DELAY_MS = 500;
