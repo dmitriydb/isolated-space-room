@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -23,6 +22,7 @@ import ru.shanalotte.schemas.TemperatureStateRecord;
 public class TemperatureConsumer extends Thread{
 
   private final Room room;
+  private final LastTemperatureStats lastTemperatureStats;
 
   public void run() {
     Map<String, Object> consumerConfigMap = new HashMap<>();
@@ -41,15 +41,30 @@ public class TemperatureConsumer extends Thread{
         try {
           TemperatureStateRecord temperatureStateRecord = objectMapper.readValue(record.value(), TemperatureStateRecord.class);
           log.info("Read temperature {}", temperatureStateRecord.getCurrentTemperature());
-          if (temperatureStateRecord.getCurrentTemperature() >= TemperatureConstants.MAX_DOUBLE_TEMPERATURE) {
-            room.closeRoom();
-          } else if (room.isClosed()){
-            room.openRoom();
-          }
+          decide(temperatureStateRecord);
+          writeStats(temperatureStateRecord);
         } catch (JsonProcessingException e) {
           log.info("Skipping record {}", record);
         }
       }
     }
+  }
+
+  private void decide(TemperatureStateRecord temperatureStateRecord) {
+    int current = temperatureStateRecord.getCurrentTemperature();
+    int nextTemperature = current + (current - lastTemperatureStats.getLastTemperature().get());
+    if (temperatureStateRecord.getCurrentTemperature() >= TemperatureConstants.MAX_DOUBLE_TEMPERATURE || nextTemperature >= TemperatureConstants.MAX_DOUBLE_TEMPERATURE) {
+      room.closeRoom();
+    }
+    if (lastTemperatureStats.getLastTemperature() == null) {
+      return;
+    }
+    room.openRoom();
+  }
+
+  private void writeStats(TemperatureStateRecord temperatureStateRecord) {
+    lastTemperatureStats.getLastTemperature().set(temperatureStateRecord.getCurrentTemperature());
+    lastTemperatureStats.getLastVector().set(temperatureStateRecord.getVector().equals("INCREASING") ? 1 : 0);
+    lastTemperatureStats.getLastChangeSpeed().set(temperatureStateRecord.getChangeSpeed());
   }
 }
