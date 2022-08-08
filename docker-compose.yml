@@ -1,0 +1,19 @@
+version: "4.0"
+
+networks:
+  roomnetwork:
+    external: true
+
+services:
+  roomserver:
+    container_name: roomserver
+    networks:
+      - roomnetwork
+    build:
+      context: /temperature-service/.
+      dockerfile: Dockerfile
+    ports:
+      - 10000:10000
+    environment:
+      T_SERVER_PORT: 10000
+
