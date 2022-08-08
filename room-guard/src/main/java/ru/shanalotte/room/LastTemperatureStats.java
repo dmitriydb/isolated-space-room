@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class LastTemperatureStats {
-  private AtomicInteger lastVector;
-  private AtomicInteger lastChangeSpeed;
-  private AtomicInteger lastTemperature;
+  private AtomicInteger lastVector = new AtomicInteger(0);
+  private AtomicInteger lastChangeSpeed = new AtomicInteger(0);
+  private AtomicInteger lastTemperature = new AtomicInteger(0);
 }

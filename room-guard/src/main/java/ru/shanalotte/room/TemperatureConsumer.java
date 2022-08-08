@@ -52,14 +52,22 @@ public class TemperatureConsumer extends Thread{
 
   private void decide(TemperatureStateRecord temperatureStateRecord) {
     int current = temperatureStateRecord.getCurrentTemperature();
-    int nextTemperature = current + (current - lastTemperatureStats.getLastTemperature().get());
-    if (temperatureStateRecord.getCurrentTemperature() >= TemperatureConstants.MAX_DOUBLE_TEMPERATURE || nextTemperature >= TemperatureConstants.MAX_DOUBLE_TEMPERATURE) {
+    if (isNotDoableTemperature(current)) {
       room.closeRoom();
     }
     if (lastTemperatureStats.getLastTemperature() == null) {
       return;
     }
-    room.openRoom();
+    int nextTemperature = current + (current - lastTemperatureStats.getLastTemperature().get());
+    if (isNotDoableTemperature(nextTemperature)) {
+      room.closeRoom();
+    } else {
+      room.openRoom();
+    }
+  }
+
+  private boolean isNotDoableTemperature(int nextTemperature) {
+    return nextTemperature >= TemperatureConstants.MAX_DOABLE_TEMPERATURE || nextTemperature <= TemperatureConstants.MIN_DOABLE_TEMPERATURE;
   }
 
   private void writeStats(TemperatureStateRecord temperatureStateRecord) {

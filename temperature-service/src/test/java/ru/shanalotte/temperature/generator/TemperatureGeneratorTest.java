@@ -15,7 +15,7 @@ public class TemperatureGeneratorTest {
   public void should_attainDoableTemperature_whenStarted() {
     TemperatureGenerator temperatureGenerator = new SimpleTemperatureGenerator();
     temperatureGenerator.start();
-    assertThat(temperatureGenerator.getCurrentTemperature()).isLessThan(TemperatureConstants.MAX_DOUBLE_TEMPERATURE);
+    assertThat(temperatureGenerator.getCurrentTemperature()).isLessThan(TemperatureConstants.MAX_DOABLE_TEMPERATURE);
   }
 
   @Test
