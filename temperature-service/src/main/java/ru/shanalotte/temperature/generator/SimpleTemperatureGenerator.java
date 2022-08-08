@@ -72,10 +72,10 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
 
   public void setNewGoal() {
     if (currentVector == TemperatureVector.INCREASING) {
-      goal.set(ThreadLocalRandom.current().nextInt(TemperatureConstants.MAX_DOABLE_TEMPERATURE));
+      goal.set(ThreadLocalRandom.current().nextInt(TemperatureConstants.MAX_GOAL_TEMPERATURE));
     } else
     {
-      goal.set(-ThreadLocalRandom.current().nextInt(-TemperatureConstants.MIN_DOABLE_TEMPERATURE));
+      goal.set(-ThreadLocalRandom.current().nextInt(-TemperatureConstants.MIN_GOAL_TEMPERATURE));
     }
     log.info("NEW GOAL IS {}", goal.get());
   }

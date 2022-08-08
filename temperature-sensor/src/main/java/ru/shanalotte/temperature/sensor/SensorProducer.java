@@ -20,12 +20,39 @@ public class SensorProducer {
   @Getter
   private int bootstrapServerPort;
 
+  private KafkaProducer<String, String> producer;
+
   public SensorProducer() {
     loadProperties();
+    prepareProducer();
   }
 
   public SensorProducer(String profile) {
     loadProperties(profile);
+    prepareProducer();
+  }
+
+  private Map<String, Object> defaultConfig() {
+    Map<String, Object> producerConfig = new HashMap<>();
+    producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "SensorProducer");
+    return producerConfig;
+  }
+
+  private Map<String, Object> configv2() {
+    Map<String, Object> producerConfig = new HashMap<>();
+    producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "SensorProducer");
+    producerConfig.put(ProducerConfig.ACKS_CONFIG, "0");
+    return producerConfig;
+  }
+
+  private void prepareProducer() {
+    producer = new KafkaProducer<>(configv2());
   }
 
   private void loadProperties() {
@@ -47,16 +74,10 @@ public class SensorProducer {
   }
 
   public void sendRecord(String record) {
-    Map<String, Object> producerConfig = new HashMap<>();
-    producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-    KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerConfig);
     ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TopicsConfig.TOPIC_NAME, null, record);
     log.info("Sending record {}", record);
     producer.send(producerRecord);
     producer.flush();
-    producer.close();
     log.info("Done");
   }
 }
