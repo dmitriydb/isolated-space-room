@@ -7,8 +7,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import org.junit.jupiter.api.Test;
 import ru.shanalotte.config.TemperatureSocketServerConfig;
 import ru.shanalotte.temperature.generator.CollectionTemperatureStateListener;
@@ -18,6 +20,8 @@ import ru.shanalotte.temperature.generator.TemperatureState;
 import ru.shanalotte.temperature.generator.TemperatureStateListener;
 
 class TemperatureSocketServerTest {
+
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
   public void socket_ShouldGiveCurrentTemperature() throws IOException, InterruptedException {
@@ -40,7 +44,12 @@ class TemperatureSocketServerTest {
         break;
       }
     }
-    List<String> actualEvents = listener.recordedEvents().stream().map(TemperatureState::toString).collect(Collectors.toList());
+    List<TemperatureState> listenerStates = new ArrayList<>(listener.recordedEvents());
+    List<String> actualEvents = new ArrayList<>();
+    for (TemperatureState e : listenerStates) {
+      String writeValueAsString = objectMapper.writeValueAsString(e.toRecord());
+      actualEvents.add(writeValueAsString);
+    }
     assertThat(actualEvents).containsAll(recordedSocketEvents.subList(0, recordedSocketEvents.size() - 1));
   }
 
@@ -62,8 +71,13 @@ class TemperatureSocketServerTest {
         for (int i = 0; i < 10; i++) {
           recordedEvents.add(in.readLine());
         }
-        assertThat(listener.recordedEvents().stream().map(TemperatureState::toString)
-            .collect(Collectors.toList())).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
+        List<TemperatureState> listenerStates = new ArrayList<>(listener.recordedEvents());
+        List<String> actualEvents = new ArrayList<>();
+        for (TemperatureState e : listenerStates) {
+          String writeValueAsString = objectMapper.writeValueAsString(e.toRecord());
+          actualEvents.add(writeValueAsString);
+        }
+        assertThat(actualEvents).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
 
       } catch (Exception ex) {
         ex.printStackTrace();
@@ -77,8 +91,13 @@ class TemperatureSocketServerTest {
         for (int i = 0; i < 10; i++) {
           recordedEvents.add(in.readLine());
         }
-        assertThat(listener.recordedEvents().stream().map(TemperatureState::toString)
-            .collect(Collectors.toList())).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
+        List<TemperatureState> listenerStates = new ArrayList<>(listener.recordedEvents());
+        List<String> actualEvents = new ArrayList<>();
+        for (TemperatureState e : listenerStates) {
+          String writeValueAsString = objectMapper.writeValueAsString(e.toRecord());
+          actualEvents.add(writeValueAsString);
+        }
+        assertThat(actualEvents).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
 
       } catch (Exception ex) {
         ex.printStackTrace();
@@ -92,8 +111,13 @@ class TemperatureSocketServerTest {
         for (int i = 0; i < 10; i++) {
           recordedEvents.add(in.readLine());
         }
-        assertThat(listener.recordedEvents().stream().map(TemperatureState::toString)
-            .collect(Collectors.toList())).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
+        List<TemperatureState> listenerStates = new ArrayList<>(listener.recordedEvents());
+        List<String> actualEvents = new ArrayList<>();
+        for (TemperatureState e : listenerStates) {
+          String writeValueAsString = objectMapper.writeValueAsString(e.toRecord());
+          actualEvents.add(writeValueAsString);
+        }
+        assertThat(actualEvents).containsAll(recordedEvents.subList(0, recordedEvents.size() - 1));
       } catch (Exception ex) {
         ex.printStackTrace();
       }

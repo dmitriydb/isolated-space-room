@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class TemperatureSocketServer implements TemperatureStateListener {
   private final int port;
   private final TemperatureGenerator temperatureGenerator;
   private CopyOnWriteArrayList<PrintWriter> clients = new CopyOnWriteArrayList<>();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   public TemperatureSocketServer(TemperatureGenerator temperatureGenerator) {
     this.temperatureGenerator = temperatureGenerator;
@@ -38,10 +40,12 @@ public class TemperatureSocketServer implements TemperatureStateListener {
     new ServerRunner().start();
   }
 
+  @SneakyThrows
   @Override
   public void getNewState(TemperatureState state) {
     for (PrintWriter out : clients) {
-      out.write(state.toString() + "\n");
+      String recordJson = objectMapper.writeValueAsString(state.toRecord());
+      out.write(recordJson + "\n");
       out.flush();
     }
   }
