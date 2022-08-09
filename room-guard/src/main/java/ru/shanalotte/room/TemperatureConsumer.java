@@ -23,12 +23,14 @@ public class TemperatureConsumer extends Thread{
 
   private final Room room;
   private final LastTemperatureStats lastTemperatureStats;
+  private final String bootstrapURL;
 
   public void run() {
     Map<String, Object> consumerConfigMap = new HashMap<>();
     ObjectMapper objectMapper = new ObjectMapper();
     consumerConfigMap.put(ConsumerConfig.GROUP_ID_CONFIG, "room");
-    consumerConfigMap.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    consumerConfigMap.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapURL);
+    log.info("CONNECTING TO {}", bootstrapURL);
     consumerConfigMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerConfigMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerConfigMap.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);

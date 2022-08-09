@@ -36,7 +36,7 @@ public class SensorProducer {
     Map<String, Object> producerConfig = new HashMap<>();
     producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerHost + ":" + bootstrapServerPort);
     producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "SensorProducer");
     return producerConfig;
   }
@@ -45,14 +45,15 @@ public class SensorProducer {
     Map<String, Object> producerConfig = new HashMap<>();
     producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerHost + ":" + bootstrapServerPort);
     producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "SensorProducer");
     producerConfig.put(ProducerConfig.ACKS_CONFIG, "0");
     return producerConfig;
   }
 
   private void prepareProducer() {
-    producer = new KafkaProducer<>(configv2());
+    log.debug("Using config {}", defaultConfig());
+    producer = new KafkaProducer<>(defaultConfig());
   }
 
   private void loadProperties() {

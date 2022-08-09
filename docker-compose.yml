@@ -46,6 +46,8 @@ services:
     networks:
       - roomnetwork
   sensor1:
+    ports:
+      - "10002:9999"
     container_name: sensor1
     networks:
       - roomnetwork
@@ -58,3 +60,12 @@ services:
       - broker1
       - zookeeper
       - roomserver
+  roomguard:
+      container_name: roomguard
+      networks:
+        - roomnetwork
+      build:
+        context: /room-guard/.
+        dockerfile: Dockerfile
+      environment:
+        PRODUCTION: true
