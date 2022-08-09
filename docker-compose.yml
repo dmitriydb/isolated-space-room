@@ -6,6 +6,8 @@ networks:
 
 services:
   roomserver:
+    ports:
+      - "10002:10002"
     container_name: roomserver
     networks:
       - roomnetwork
@@ -46,8 +48,6 @@ services:
     networks:
       - roomnetwork
   sensor1:
-    ports:
-      - "10002:9999"
     container_name: sensor1
     networks:
       - roomnetwork
@@ -61,11 +61,13 @@ services:
       - zookeeper
       - roomserver
   roomguard:
-      container_name: roomguard
-      networks:
+    ports:
+      - "10003:10003"
+    container_name: roomguard
+    networks:
         - roomnetwork
-      build:
+    build:
         context: /room-guard/.
         dockerfile: Dockerfile
-      environment:
+    environment:
         PRODUCTION: true

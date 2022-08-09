@@ -27,6 +27,5 @@ public class SocketServerLauncher {
     ObjectName objectName = new ObjectName("ru.shanalotte.temperature:type=temperaturecontrol,name=temperature");
     MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
     mBeanServer.registerMBean(temperatureGenerator, objectName);
-
   }
 }
