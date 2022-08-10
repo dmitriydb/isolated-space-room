@@ -1,6 +1,7 @@
 package ru.shanalotte.room;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class TemperatureConsumer extends Thread{
       for (ConsumerRecord<String, String> record : records) {
         try {
           TemperatureStateRecord temperatureStateRecord = objectMapper.readValue(record.value(), TemperatureStateRecord.class);
-          log.info("Read temperature {}", temperatureStateRecord.getCurrentTemperature());
+          log.info("[{}], Read temperature {}", LocalDateTime.now(), temperatureStateRecord.getCurrentTemperature());
           decide(temperatureStateRecord);
           writeStats(temperatureStateRecord);
         } catch (JsonProcessingException e) {
