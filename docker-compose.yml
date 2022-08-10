@@ -62,6 +62,7 @@ services:
   roomguard:
     ports:
       - "10003:10003"
+      - "10005:10005"
     container_name: roomguard
     networks:
         - roomnetwork
