@@ -1,0 +1,7 @@
+.panelDiv {
+    width: 650px;
+    height: 150px;
+    border-top: 3px solid #F2F574;
+    display:flex;
+    flex-direction: row;
+}

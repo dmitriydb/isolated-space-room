@@ -1,0 +1,7 @@
+.leftSensorsDiv {
+    width: 125px;
+    border-right: 3px solid #F2F574;
+    height: 150px;
+    display:flex;
+ flex-direction: column;
+}

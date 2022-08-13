@@ -1,0 +1,12 @@
+.radarDiv {
+    width: 400px;
+    height: 150px;
+    font-family: Rational;
+    font-size: 30px;
+}
+
+
+@font-face {
+    font-family: "Rational";
+    src: url("fonts/Rational.ttf");
+    }

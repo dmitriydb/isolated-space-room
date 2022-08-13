@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Neutronium";
+    src: url("fonts/Neutronium.ttf");
+    }
+
+.sensorLabelDiv {
+    font-family: Neutronium;
+    font-size: 25px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+}
