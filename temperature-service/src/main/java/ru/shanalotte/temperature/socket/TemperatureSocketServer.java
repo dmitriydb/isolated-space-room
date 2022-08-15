@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.shanalotte.config.TemperatureSocketServerConfig;
+import ru.shanalotte.schemas.TemperatureState;
 import ru.shanalotte.temperature.generator.TemperatureGenerator;
-import ru.shanalotte.temperature.generator.TemperatureState;
 import ru.shanalotte.temperature.generator.TemperatureStateListener;
 
 @RequiredArgsConstructor

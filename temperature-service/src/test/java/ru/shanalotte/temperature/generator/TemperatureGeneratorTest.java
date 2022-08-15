@@ -6,8 +6,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import ru.shanalotte.constants.TemperatureConstants;
 import ru.shanalotte.config.TemperatureGeneratorConfig;
+import ru.shanalotte.constants.TemperatureConstants;
+import ru.shanalotte.schemas.TemperatureState;
+import ru.shanalotte.schemas.TemperatureVector;
 
 public class TemperatureGeneratorTest {
 
@@ -21,13 +23,15 @@ public class TemperatureGeneratorTest {
   @Test
   public void should_changeCurrentTemperatureVectorWithAtLeast10Seconds() throws InterruptedException {
     TemperatureGenerator temperatureGenerator = new SimpleTemperatureGenerator();
+    int now = temperatureGenerator.getCurrentTemperature();
     temperatureGenerator.start();
     Set<TemperatureVector> vectors = new HashSet<>();
     for (int i = 0; i < 10; i++) {
       vectors.add(temperatureGenerator.getCurrentTemperatureVector());
       Thread.sleep(TemperatureGeneratorConfig.TEMPERATURE_CHANGE_TIMEOUT_MS);
     }
-    assertThat(vectors).hasSizeGreaterThan(1);
+    int after = temperatureGenerator.getCurrentTemperature();
+    assertThat(now).isNotEqualTo(after);
   }
 
   @Test

@@ -6,17 +6,15 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Cleanup;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import org.junit.jupiter.api.Test;
 import ru.shanalotte.config.TemperatureSocketServerConfig;
 import ru.shanalotte.temperature.generator.CollectionTemperatureStateListener;
 import ru.shanalotte.temperature.generator.SimpleTemperatureGenerator;
 import ru.shanalotte.temperature.generator.TemperatureGenerator;
-import ru.shanalotte.temperature.generator.TemperatureState;
+import ru.shanalotte.schemas.TemperatureState;
 import ru.shanalotte.temperature.generator.TemperatureStateListener;
 
 class TemperatureSocketServerTest {

@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import ru.shanalotte.config.TemperatureGeneratorConfig;
 import ru.shanalotte.constants.TemperatureConstants;
+import ru.shanalotte.schemas.TemperatureState;
+import ru.shanalotte.schemas.TemperatureVector;
 
 @Slf4j
 public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleTemperatureGeneratorMBean {

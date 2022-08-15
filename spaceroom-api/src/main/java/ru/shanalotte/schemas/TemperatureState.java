@@ -1,4 +1,4 @@
-package ru.shanalotte.temperature.generator;
+package ru.shanalotte.schemas;
 
 import lombok.Data;
 import ru.shanalotte.schemas.TemperatureStateRecord;

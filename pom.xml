@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>temperature-service</module>
-        <module>config</module>
+        <module>spaceroom-api</module>
         <module>temperature-sensor</module>
+        <module>temperature-service</module>
         <module>room-guard</module>
     </modules>
 
