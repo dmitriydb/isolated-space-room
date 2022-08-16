@@ -1,18 +1,18 @@
-##Space room simulator
+## Space room simulator
 A super simple real-time decision system built with:
 - Apache Kafka
 - React
 - Spring Boot
 - Docker.
 
-##Trivia
+## Trivia
 This app simulates the fictional situation ongoing on the space orbit when the temperature outside the ship is changing rapidly (many times per second) and ship subsystems should decide and also predict when to seal the doors and windows to prevent crew from the heat (or freezing) damage.
 
 The system also should be durable and reliable and maintain safe state of the ship's crew when sensors are down or not responding yet.
 
 Or something like that.
 
-##How to run the project locally
+## How to run the project locally
 
 `git clone https://github.com/dmitriydb/isolated-space-room`
 
@@ -41,7 +41,7 @@ This app's design is totally copycatting the [Elite game](https://en.wikipedia.o
 ![](https://files.catbox.moe/6gqn9f.gif)
 
 
-##Services
+## Services
 ### Temperature generator service
 Simulates the environment outside the ship and generates random temperature stats every now and then.
 
