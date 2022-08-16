@@ -71,3 +71,14 @@ services:
         dockerfile: room-guard/Dockerfile
     environment:
         PRODUCTION: true
+  room-ui:
+    ports:
+      - "10033:80"
+    container_name: room-ui
+    networks:
+      - roomnetwork
+    build:
+      context: ./roomui/.
+      dockerfile: Dockerfile
+    depends_on:
+      - roomguard
