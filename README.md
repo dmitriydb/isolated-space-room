@@ -1,16 +1,47 @@
 ##Space room simulator
-A super simple real-time decision system built with Apache Kafka, React, Jackson and Docker.
+A super simple real-time decision system built with:
+- Apache Kafka
+- React
+- Spring Boot
+- Docker.
 
 ##Trivia
-This app simulates the fictional situation on the space orbit when the temperature outside the ship is changing rapidly (many times per second) and ship subsystems should decide and also predict when to seal the doors and windows to prevent crew from the heat (or freezing) damage.
+This app simulates the fictional situation ongoing on the space orbit when the temperature outside the ship is changing rapidly (many times per second) and ship subsystems should decide and also predict when to seal the doors and windows to prevent crew from the heat (or freezing) damage.
 
-##How to run the project
-TBD
+The system also should be durable and reliable and maintain safe state of the ship's crew when sensors are down or not responding yet.
+
+Or something like that.
+
+##How to run the project locally
+
+`git clone https://github.com/dmitriydb/isolated-space-room`
+
+`cd isolated-space-room`
+
+`docker compose up`
+
+## React app
+
+**Description**
+
+Prototype to demostrate what this project is about.
+
+Shows realtime information about room current state (current temperature, temperature change speed, lock state etc.)
+
+This app's design is totally copycatting the [Elite game](https://en.wikipedia.org/wiki/Elite_(video_game)) screen.
+
+**Notable endpoints**
+
+|Endpoint | Endpoint description|
+|--------|-------|
+|http://localhost:10033| React app running inside the Docker container
+
+**Demo**
+
+![](https://files.catbox.moe/6gqn9f.gif)
+
 
 ##Services
-
-###React app
-TBD
 ### Temperature generator service
 Simulates the environment outside the ship and generates random temperature stats every now and then.
 
@@ -31,8 +62,15 @@ Services that reads values from the server socket and produces records to the Ka
 #### Room guard service
 Consumes temperature state records from the topic `temperature` and make decision to open/close the door.
 
+**Notable endpoints**
+
+|Endpoint | Endpoint description|
+|--------|-------|
+|http://localhost:10005/stats| Grab json representation of the room current state
+
 **JMX configuration**
-Connect with command `jconsole localhost:10002`
+
+Connect with `jconsole localhost:10002`
 
 |Object Name   |Operation|Description |
 |--------|-----|--------|
