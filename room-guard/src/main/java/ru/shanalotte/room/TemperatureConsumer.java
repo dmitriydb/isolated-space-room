@@ -30,7 +30,20 @@ public class TemperatureConsumer extends Thread{
     this.room = room;
     this.lastTemperatureStats = lastTemperatureStats;
     this.bootstrapURL = bootstrapURL;
-    consumer = new KafkaConsumer<>(consumerConfig());
+    while (true) {
+      try {
+        log.info("Trying to connect to cluster...");
+        consumer = new KafkaConsumer<>(consumerConfig());
+        break;
+      } catch (Throwable t) {
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    log.info("Connected...!");
     consumer.subscribe(Collections.singletonList(TopicsConfig.TOPIC_NAME));
   }
 
