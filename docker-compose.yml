@@ -71,6 +71,8 @@ services:
         dockerfile: room-guard/Dockerfile
     environment:
         PRODUCTION: true
+    depends_on:
+      - broker1
   room-ui:
     ports:
       - "10033:80"
