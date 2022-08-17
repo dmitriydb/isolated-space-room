@@ -29,7 +29,6 @@ public class TemperatureSocketServer implements TemperatureStateListener {
     this.temperatureGenerator = temperatureGenerator;
     int portValue = TemperatureSocketServerConfig.DEFAULT_PORT;
     try {
-      System.out.println(System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE));
       portValue = Integer.parseInt(System.getenv(TemperatureSocketServerConfig.PORT_ENV_VARIABLE));
     } catch (Throwable t) {
     }

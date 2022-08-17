@@ -1,8 +1,6 @@
 package ru.shanalotte.room;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import javax.management.ObjectName;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

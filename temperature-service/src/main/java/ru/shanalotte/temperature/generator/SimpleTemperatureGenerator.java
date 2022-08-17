@@ -14,12 +14,13 @@ import ru.shanalotte.schemas.TemperatureVector;
 @Slf4j
 public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleTemperatureGeneratorMBean {
 
-  private AtomicInteger currentTemperature = new AtomicInteger(0);
-  private AtomicInteger temperatureChangeSpeed = new AtomicInteger(0);
+  private final AtomicInteger currentTemperature = new AtomicInteger(0);
+  private final AtomicInteger temperatureChangeSpeed = new AtomicInteger(0);
   private volatile TemperatureVector currentVector = TemperatureVector.INCREASING;
-  private List<TemperatureStateListener> listeners = new ArrayList<>();
-  private ArrayBlockingQueue<TemperatureState> listenerEvents = new ArrayBlockingQueue<>(1000);
-  private AtomicInteger goal = new AtomicInteger(0);
+  private final List<TemperatureStateListener> listeners = new ArrayList<>();
+  private final ArrayBlockingQueue<TemperatureState> listenerEvents = new ArrayBlockingQueue<>(1000);
+  private final AtomicInteger goal = new AtomicInteger(0);
+
   public SimpleTemperatureGenerator() {
 
   }
@@ -27,7 +28,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
   public void start() {
     chooseInitialVector();
     chooseRandomTemperatureChangingSpeed();
-    sendState();
+    sendCurrentState();
     new VectorChanger().start();
     new TemperatureRefresher().start();
     new ListenerNotifier().start();
@@ -42,7 +43,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
     int delta = currentVector == TemperatureVector.INCREASING ? temperatureChangeSpeed.get() :
         -temperatureChangeSpeed.get();
     currentTemperature.set(delta + currentTemperature.get());
-    sendState();
+    sendCurrentState();
   }
 
   public int getCurrentTemperature() {
@@ -60,7 +61,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
     } else {
       currentVector = TemperatureVector.INCREASING;
     }
-    sendState();
+    sendCurrentState();
   }
 
   private void chooseInitialVector() {
@@ -135,7 +136,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
             changeVector();
             setNewGoal();
             chooseRandomTemperatureChangingSpeed();
-            sendState();
+            sendCurrentState();
           }
         }
       } catch (InterruptedException e) {
@@ -149,7 +150,7 @@ public class SimpleTemperatureGenerator implements TemperatureGenerator, SimpleT
     this.currentTemperature.set(temperature);
   }
 
-  private void sendState() {
+  private void sendCurrentState() {
     listenerEvents.add(currentState());
   }
 

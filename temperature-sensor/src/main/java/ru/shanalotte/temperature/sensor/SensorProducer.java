@@ -41,16 +41,6 @@ public class SensorProducer {
     return producerConfig;
   }
 
-  private Map<String, Object> configv2() {
-    Map<String, Object> producerConfig = new HashMap<>();
-    producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerHost + ":" + bootstrapServerPort);
-    producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "SensorProducer");
-    producerConfig.put(ProducerConfig.ACKS_CONFIG, "0");
-    return producerConfig;
-  }
-
   private void prepareProducer() {
     log.debug("Using config {}", defaultConfig());
     producer = new KafkaProducer<>(defaultConfig());

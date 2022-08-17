@@ -23,6 +23,8 @@ import ru.shanalotte.room.rest.MainRestController;
 @ComponentScan("ru.shanalotte")
 public class RoomGuardLauncher implements CommandLineRunner {
 
+  private static final int MAX_CONSUMERS = 10;
+
   @Autowired
   private MainRestController mainRestController;
 
@@ -36,9 +38,14 @@ public class RoomGuardLauncher implements CommandLineRunner {
     room.attachConnectionMonitor(connectionMonitor);
     connectionMonitor.start();
     String bootstrapUrl = bootstrapURL();
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < MAX_CONSUMERS; i++) {
       new TemperatureConsumer(room, lastTemperatureStats ,bootstrapUrl).start();
     }
+    registerMBeans(connectionMonitor);
+    SpringApplication.run(RoomGuardLauncher.class, args);
+  }
+
+  private static void registerMBeans(ConnectionMonitor connectionMonitor) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
     MBeanServer server = ManagementFactory.getPlatformMBeanServer();
     ObjectName objectName = new ObjectName("ru.shanalotte.room", "room", "connectionmonitor");
     ObjectName objectName2 = new ObjectName("ru.shanalotte.room", "room", "lasttemperature");
@@ -46,9 +53,6 @@ public class RoomGuardLauncher implements CommandLineRunner {
     server.registerMBean(lastTemperatureStats, objectName2);
     server.registerMBean(room, objectName3);
     server.registerMBean(connectionMonitor, objectName);
-   // Endpoint endpoint = Endpoint.publish("http://localhost:10005/room/state", webService);
-   // log.warn("ENDPOINT IS {}", endpoint.isPublished());
-    SpringApplication.run(RoomGuardLauncher.class, args);
   }
 
   private static String bootstrapURL() {

@@ -9,6 +9,7 @@ import ru.shanalotte.schemas.TemperatureState;
 public class CollectionTemperatureStateListener implements TemperatureStateListener{
 
   private final List<TemperatureState> recordedEvents = new ArrayList<>();
+
   @Override
   public void getNewState(TemperatureState state) {
     log.debug(state.toString());

@@ -24,6 +24,10 @@ public class SocketServerLauncher {
     temperatureGenerator.start();
     temperatureSocketServer.start();
 
+    registerMBeans(temperatureGenerator);
+  }
+
+  private static void registerMBeans(TemperatureGenerator temperatureGenerator) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
     ObjectName objectName = new ObjectName("ru.shanalotte.temperature:type=temperaturecontrol,name=temperature");
     MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
     mBeanServer.registerMBean(temperatureGenerator, objectName);
