@@ -1,10 +1,12 @@
-FROM maven:3.6.1-jdk-8-alpine AS MAVEN_BUILD
-COPY room-guard/src ./room-guard/src
-COPY room-guard/pom.xml ./room-guard
+FROM maven:3.6.1-jdk-8-alpine AS DEPS
 COPY spaceroom-api/src ./spaceroom-api/src
 COPY spaceroom-api/pom.xml ./spaceroom-api
 WORKDIR ./spaceroom-api
 RUN mvn install
+FROM maven:3.6.1-jdk-8-alpine AS MAVEN_BUILD
+COPY --from=DEPS /root/.m2 /root/.m2
+COPY room-guard/src ./room-guard/src
+COPY room-guard/pom.xml ./room-guard
 WORKDIR ../room-guard
 RUN mvn clean install
 FROM adoptopenjdk/openjdk8
