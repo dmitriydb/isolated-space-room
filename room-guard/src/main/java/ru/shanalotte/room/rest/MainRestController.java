@@ -17,8 +17,7 @@ public class MainRestController {
 
   @CrossOrigin(origins = "*")
   @GetMapping(value = "/stats", produces = "application/json")
-  public @ResponseBody
-  RoomStatsDto getRoomStats() {
+  public @ResponseBody RoomStatsDto getRoomStats() {
     if (lastTemperatureStats == null) {
       return new RoomStatsDto(LocalDateTime.now(), 0, 0, 0, "closed");
     }
