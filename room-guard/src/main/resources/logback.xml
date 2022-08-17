@@ -6,6 +6,8 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
+    <logger name="org.apache" level="OFF"/>
+    <logger name="ru.shanalotte" level="DEBUG"/>
     <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
