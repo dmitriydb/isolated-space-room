@@ -19,6 +19,9 @@ public class MainRestController {
   @GetMapping(value = "/stats", produces = "application/json")
   public @ResponseBody
   RoomStatsDto getRoomStats() {
+    if (lastTemperatureStats == null) {
+      return new RoomStatsDto(LocalDateTime.now(), 0, 0, 0, "closed");
+    }
     return new RoomStatsDto(LocalDateTime.now(), lastTemperatureStats.getTemperature(),
         lastTemperatureStats.getVector(),
         lastTemperatureStats.getChangeSpeed(),

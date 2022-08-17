@@ -1,6 +1,7 @@
 package ru.shanalotte.room;
 
 import java.time.Instant;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import ru.shanalotte.config.TemperatureGeneratorConfig;
 @RequiredArgsConstructor
 @Slf4j
 public class ConnectionMonitor extends Thread implements ConnectionMonitorMBean{
+  @Getter
   private volatile Instant lastUpdateTime = Instant.now();
   private final Room room;
 

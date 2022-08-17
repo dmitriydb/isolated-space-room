@@ -1,11 +1,13 @@
 package ru.shanalotte.room;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Room implements RoomMBean{
 
+  @Getter
   public AtomicInteger status = new AtomicInteger(0);
   private ConnectionMonitor connectionMonitor;
 

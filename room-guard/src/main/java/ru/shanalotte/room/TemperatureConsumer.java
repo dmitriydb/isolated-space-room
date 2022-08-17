@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -18,19 +19,32 @@ import ru.shanalotte.config.TopicsConfig;
 import ru.shanalotte.constants.TemperatureConstants;
 import ru.shanalotte.schemas.TemperatureStateRecord;
 
-@RequiredArgsConstructor
 @Slf4j
 public class TemperatureConsumer extends Thread{
 
-  private final Room room;
-  private final LastTemperatureStats lastTemperatureStats;
-  private final String bootstrapURL;
+  private Room room;
+  private LastTemperatureStats lastTemperatureStats;
+  private String bootstrapURL;
+  private Consumer<String, String> consumer;
+
+  public TemperatureConsumer(Room room, LastTemperatureStats lastTemperatureStats, String bootstrapURL) {
+    this.room = room;
+    this.lastTemperatureStats = lastTemperatureStats;
+    this.bootstrapURL = bootstrapURL;
+    consumer = new KafkaConsumer<>(consumerConfig());
+    consumer.subscribe(Collections.singletonList(TopicsConfig.TOPIC_NAME));
+  }
+
+  public TemperatureConsumer(Room room, LastTemperatureStats lastTemperatureStats, String bootstrapURL, Consumer<String, String> consumer) {
+    this.room = room;
+    this.lastTemperatureStats = lastTemperatureStats;
+    this.bootstrapURL = bootstrapURL;
+    this.consumer = consumer;
+  }
 
   public void run() {
-    KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerConfig());
-    consumer.subscribe(Collections.singletonList(TopicsConfig.TOPIC_NAME));
-    log.info("Start listening!");
     ObjectMapper objectMapper = new ObjectMapper();
+    log.info("Start listening!");
     while (true) {
       ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100L));
       for (ConsumerRecord<String, String> record : records) {
@@ -78,8 +92,8 @@ public class TemperatureConsumer extends Thread{
   }
 
   private void saveStats(TemperatureStateRecord temperatureStateRecord) {
-    lastTemperatureStats.getLastTemperature().set(temperatureStateRecord.getCurrentTemperature());
-    lastTemperatureStats.getLastVector().set(temperatureStateRecord.getVector().equals("INCREASING") ? 1 : 0);
-    lastTemperatureStats.getLastChangeSpeed().set(temperatureStateRecord.getChangeSpeed());
+    lastTemperatureStats.setTemperature(temperatureStateRecord.getCurrentTemperature());
+    lastTemperatureStats.setVector(temperatureStateRecord.getVector().equals("INCREASING") ? 1 : 0);
+    lastTemperatureStats.setSpeed(temperatureStateRecord.getChangeSpeed());
   }
 }
