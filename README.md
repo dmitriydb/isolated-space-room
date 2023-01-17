@@ -1,9 +1,18 @@
+# Table of contents
+1. [What is it](#space-room-simulator)
+2. [Trivia](#trivia)
+3. [Architecture](#architecture)
+4. [How to deploy](#how-to-run-the-project-locally)
+5. [Demo animation](#demo-gif-react-web-app)
+6. [Services description](#services)
+7. [JMX configuration](#jmx-configuration)
+
 ## Space room simulator
 A super simple real-time decision system built with:
 - Apache Kafka
 - React
 - Spring Boot
-- Docker.
+- Docker
 
 ## Trivia
 This app simulates the fictional situation ongoing on the space orbit when the temperature outside the ship is changing rapidly (many times per second) and ship subsystems should decide and also predict when to seal the doors and windows to prevent crew from the heat (or freezing) damage.
@@ -11,6 +20,10 @@ This app simulates the fictional situation ongoing on the space orbit when the t
 The system also should be durable and reliable and maintain safe state of the ship's crew when sensors are down or not responding yet.
 
 Or something like that.
+
+## Architecture
+
+![](https://files.catbox.moe/bd134p.png)
 
 ## How to run the project locally
 
@@ -36,7 +49,7 @@ This app's design is totally copycatting the [Elite game](https://en.wikipedia.o
 |--------|-------|
 |http://localhost:10033| React app running inside the Docker container
 
-**Demo**
+## Demo gif (React Web App)
 
 ![](https://files.catbox.moe/6gqn9f.gif)
 
@@ -68,7 +81,7 @@ Consumes temperature state records from the topic `temperature` and make decisio
 |--------|-------|
 |http://localhost:10005/stats| Grab json representation of the room current state
 
-**JMX configuration**
+## JMX configuration
 
 Connect with `jconsole localhost:10002`
 
