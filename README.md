@@ -51,7 +51,7 @@ This app's design is totally copycatting the [Elite game](https://en.wikipedia.o
 
 ## Demo gif (React Web App)
 
-![](https://files.catbox.moe/6gqn9f.gif)
+![](https://i.ibb.co/M27Xjrh/55.gif)
 
 
 ## Services
